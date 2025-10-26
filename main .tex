@@ -1,0 +1,578 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{float}
+
+
+
+\title{\textbf{ProblemSet2}}
+\author{\textbf{Charitha Madhamsetty}}
+\date{October 2024}
+
+\begin{document}
+\maketitle
+\section*{Problem 1: Genetic Algorithm Implementation}
+\subsection*{\textbf{Q1. Implementation Description}}
+\textbf{Problem Description and Initialization:}\\
+Here, the main aim of the knapsack problem is to maximize the value of the items added in the knapsack by keeping the total weight less than the constraint W given. I have used a population-based genetic algorithm involving several steps like fitness calculation, selection, crossover, and mutation to implement this. First, An initial population of a certain size is randomly generated - 'P' with size 'popsize'. This population contains individuals (chromosomes), which are the sequences of 0s and 1s of length 'n' that represent whether a particular item is included or not (0 - not included, 1 - included).\\
+\textbf{Fitness Function and Selection methods:}\\
+I have implemented the fitness function where the fitness represents the summation of values of active genes and zero if the total weight of the active genes exceeds the weight constraint W. I have also implemented the custom fitness function i.e. fitness with penalty. So, in this case, to ensure that the maximum weight included in the knapsack does not exceed W, a penalty value is reduced from the actual value which is proportional to the difference in the total weight and the weight constraint W instead of zero. This penalty method helps enforce the weight constraint by reducing the fitness of infeasible solutions. But this method can ensure that even the infeasible solutions that might contain valuable genetic information (high-value combination of items) are explored.
+penalty = (Weight - W)/W
+value = tvalue - penalty * tvalue
+After that, I used the Roulette wheel and Tournament selection methods. In roulette wheel selection, a probability of selection is assigned to each individual which is proportional to fitness, with better solutions having higher chances of selection. In the tournament method, a small subset of individuals is chosen, and the one with the highest fitness in that subset is selected, encouraging competition between individuals based on their fitness.
+Using any of the two selection methods, two individuals with the highest selection probability are selected.\\
+\textbf{Crossover and Mutation:}\\
+After selection, a crossover is performed to generate offspring. Here, I have used single point crossover which generated two off-springs. In this method, segments of parents are swapped after a randomly chosen cross-over point producing offspring. Then, in mutation, more than one randomly chosen genes are altered in the offspring introducing diversity. Along with mutation, I have implemented a repair method where the number of active genes is forcefully reduced to ensure the total weight of the offspring is less than the knapsack capacity. This way I can make sure that individuals with weights greater than knapsack capacity are not produced in each generation. I have explored different mutation rates in the range of (0.05, 0.2) and chose the best one i.e., the one that generated the highest average fitness.\\
+\textbf{Stopping Criterion:}\\
+As a stopping criterion, a specified number of generations is used - "stop". The algorithm is stopped after going through this number of generations. I implemented my stopping criterion which is "convergence". If there is no improvement in the average fitness values across the generations, then the algorithm is stopped. Here, patience represents how many generations are to be ignored if there is no improvement and tolerance represents the threshold for the acceptable amount of improvement between the generations. During the process, the average fitness and the best fitness of each generation are stored. The best solution with the highest fitness values across all generations is recorded for each selection method.\\
+
+\subsection*{\textbf{Q2. Selection alone}}
+a, b. \\
+\begin{figure}[h]
+\centering
+{
+\includegraphics[width=.225\textwidth]{P1.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P2.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P3.png}
+}
+\caption{Plots for Config 1}
+\label{}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+{
+\includegraphics[width=.225\textwidth]{P4.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P5.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P6.png}
+}
+\caption{Plots for Config 2}
+\label{}
+\end{figure}
+
+
+c. 
+{\textbf{Results using config 1:} \\
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Selection Method & No. of items & Total Value & Generation\\ 
+   \hline
+   Roulette & 24 & 5382.00 & 0\\ 
+   \hline
+   Tournament & 24 & 5382.00 & 0\\ 
+   \hline
+\end{tabular}}
+\caption{Best Individual across all generations} 
+\end{table} 
+
+{\textbf{Results using config 2:} \\
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Selection Method & No. of items & Total Value & Generation\\ 
+   \hline
+   Roulette & 51 & 0.00 & 0\\ 
+   \hline
+   Tournament & 51 & 0.00 & 0\\ 
+   \hline
+\end{tabular}}
+\caption{Best Individual across all generations} 
+\end{table} 
+
+d. From the results of config1, the best fitness is obtained in generation 0 (since best fitness is the same across all generations, 1st generation is considered the best) itself with a total value of 5382. Also, the best solution remained the same i.e., the best fitness across all the generations (till Pstop) is the same. This is because there is no crossover performed which means no new individuals are not generated. So, the average fitness and the best fitness remain the same across all the generations. \\
+The same is the case with config2 when the penalty is not used. The total fitness values remained zero across all the generations because individuals are the same, so the fitness values are the same and the probabilities of selection are also the same resulting in the same parents in each generation. \\
+
+\subsection*{\textbf{Q2. Extra Credit}}
+\begin{figure}[h]
+\centering
+{
+\includegraphics[width=.225\textwidth]{P7.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P8.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P9.png}
+}
+\caption{Plots for Config 1}
+\label{}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+{
+\includegraphics[width=.225\textwidth]{P10.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P11.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P12.png}
+}
+\caption{Plots for Config 2}
+\label{}
+\end{figure}
+{\textbf{Results using config 1 with penalty:} \\
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Selection Method & No. of items & Total Value & Generation\\ 
+   \hline
+   Roulette & 24 & 5382.00 & 0\\ 
+   \hline
+   Tournament & 24 & 5382.00 & 0\\ 
+   \hline
+\end{tabular}}
+\caption{Best Individual across all generations} 
+\end{table} 
+
+{\textbf{Results using config 2 with penalty:} \\
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Selection Method & No. of items & Total Value & Generation\\ 
+   \hline
+   Roulette & 35 & -7004.92 & 0\\ 
+   \hline
+   Tournament & 35 & -7004.92 & 0\\ 
+   \hline
+\end{tabular}}
+\caption{Best Individual across all generations} 
+\end{table}
+\textbf{Observations and Comparison with the fitness function without penalty:} \\
+When the penalty is used, fitness values change, so the probabilities of selection change across the generations. In the case of config1, the best solution is produced in generation 0 itself with the fitness value of - 5382 in the case of the Roulette wheel selection method, but it got reduced to 5048 at Pstop. This means that a significant number of individuals at Pstop have a total weight greater than W, resulting in a decrease in the total value.\\
+The same is the case for config2, the best solution occurred in generation 0 and the total value is reduced when Pstop is reached. \\
+
+\subsection*{\textbf{Q3. Integrate Cross-over and Mutation}}
+\textbf{Without penalty: } \\'
+\begin{figure}[h]
+\centering
+{
+\includegraphics[width=.225\textwidth]{P13.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P14.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P15.png}
+}
+\caption{Plots for Config 1}
+\label{}
+\end{figure}
+
+\textbf{Results for config1: }\\
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Selection Method & No. of items & Total Value & Total Weight & Best Mutation Rate \\ 
+   \hline
+   Roulette & 23 & 4084.00 & 752 & 0.05 \\ 
+   \hline
+   Tournament & 17 & 2556.00 & 511 & 0.05\\ 
+   \hline
+\end{tabular}}
+\caption{Results at Pstop} 
+\end{table} 
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Selection Method & No. of items & Total Value & Generation\\ 
+   \hline
+   Roulette & 25 & 5574.00 & 13\\ 
+   \hline
+   Tournament & 24 & 5650.00 & 15\\ 
+   \hline
+\end{tabular}}
+\caption{Best Individual across all generations} 
+\end{table} 
+
+\begin{figure}[h]
+\centering
+{
+\includegraphics[width=.225\textwidth]{P16.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P17.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P18.png}
+}
+\caption{Plots for Config 2}
+\label{}
+\end{figure}
+
+\textbf{Results for config2: }\\
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Selection Method & No. of items & Total Value & Total Weight & Best Mutation Rate \\ 
+   \hline
+   Roulette & 60 & 0 & 29353.00 & 0.05 \\ 
+   \hline
+   Tournament & 58 & 0 & 26596.00 & 0.05\\ 
+   \hline
+\end{tabular}}
+\caption{Results at Pstop} 
+\end{table} 
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Selection Method & No. of items & Total Value & Generation\\ 
+   \hline
+   Roulette & 51 & 0.00 & 0\\ 
+   \hline
+   Tournament & 24 & 0.00 & 0\\ 
+   \hline
+\end{tabular}}
+\caption{Best Individual across all generations} 
+\end{table} 
+
+\textbf{With penalty: } \\
+\textbf{Results for config1: }\\
+\begin{figure}[h]
+\centering
+{
+\includegraphics[width=.225\textwidth]{P19.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P20.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P21.png}
+}
+\caption{Plots for Config 1 using penalty}
+\label{}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Selection Method & No. of items & Total Value & Total Weight & Best Mutation Rate \\ 
+   \hline
+   Roulette & 26 & 5630.00 & 807 & 0.20 \\ 
+   \hline
+   Tournament & 23 & 4593.00 & 804 & 0.05\\ 
+   \hline
+\end{tabular}}
+\caption{Results at Pstop} 
+\end{table} 
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Selection Method & No. of items & Total Value & Generation\\ 
+   \hline
+   Roulette & 27 & 6734.00 & 2\\ 
+   \hline
+   Tournament & 28 & 6219.00 & 8\\ 
+   \hline
+\end{tabular}}
+\caption{Best Individual across all generations} 
+\end{table} 
+
+\textbf{Results for config2: }\\
+\begin{figure}[h]
+\centering
+{
+\includegraphics[width=.225\textwidth]{P22.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P23.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P24.png}
+}
+\caption{Plots for Config 2}
+\label{}
+\end{figure}
+
+\textbf{Results for config2: }\\
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Selection Method & No. of items & Total Value & Total Weight & Best Mutation Rate \\ 
+   \hline
+   Roulette & 14 & 741 & 2259.00 & 0.05 \\ 
+   \hline
+   Tournament & 15 & 561 & 2287.00 & 0.05\\ 
+   \hline
+\end{tabular}}
+\caption{Results at Pstop} 
+\end{table} 
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Selection Method & No. of items & Total Value & Generation\\ 
+   \hline
+   Roulette & 16 & 1015.00 & 5\\ 
+   \hline
+   Tournament & 19 & 985.00 & 23\\ 
+   \hline
+\end{tabular}}
+\caption{Best Individual across all generations} 
+\end{table}
+
+\textbf {Discussion and Comparison: }
+As shown in the table1, for config 1, at Pstop, the value is maximized using the Roulette selection method. The best individual across all generations is seen in the 15th generation with a total value of 5650.00 and using the tournament selection method.
+When compared with the results obtained in selection alone (5382.00), there is an improvement in the total value of the best individual across all the generations.
+In the case of config 2, the total value remained zero in both cases. Also, the total value in both cases is greater than the total capacity of the knapsack. This indicates that there are no individuals whose weight is less than or equal to knapsack capacity. So, the fitness value is always zero. \\
+\textbf {To overcome the problem: Penalty function and Repair solution: }
+To overcome this problem, the penalty function along with forcible repair is used. In penalty function, the total value is reduced proportionally to the difference in total weight and the knapsack capacity when the total weight exceeds the knapsack capacity. In repair function, the number of active genes is reduced forcefully after mutation. This ensures that the produced off-springs are feasible solutions. so, after repairing, the total value improved and the total weight of the best individual at Pstop was less than the knapsack capacity.
+
+\subsection*{\textbf{Q3 Extra Credit}}
+\textbf{Using Convergence as stopping criteria: }\\
+\textbf{Results for config1: }\\
+\begin{figure}[h]
+\centering
+{
+\includegraphics[width=.225\textwidth]{P25.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P26.png}
+}
+{
+\includegraphics[width=.225\textwidth]{P27.png}
+}
+\caption{Plots for Config 1 using convergence}
+\label{}
+\end{figure}
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Selection Method & No. of items & Total Value & Total Weight & Best Mutation Rate \\ 
+   \hline
+   Roulette & 23 & 3639.00 & 728 & 0.20 \\ 
+   \hline
+   Tournament & 23 & 3639.00 & 728 & 0.20\\ 
+   \hline
+\end{tabular}}
+\caption{Results at Pstop} 
+\end{table} 
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Selection Method & No. of items & Total Value & Generation\\ 
+   \hline
+   Roulette & 26 & 5921.00 & 16\\ 
+   \hline
+   Tournament & 26 & 5921.00 & 16\\ 
+   \hline
+\end{tabular}}
+\caption{Best Individual across all generations} 
+\end{table} 
+So, when convergence is applied, in the case of config1, the value is increased to 5921.00 which was 5650.00 without convergence. From the graph, the algorithm converged at the 42nd generation in the case of Roulette and at 69th generation in the case of the Tournament selection method. Also, using convergence helps in finding the nearly optimal solution since we are stopping the algorithm when there is no improvement in the fitness values. However, like every genetic algorithm, using convergence as a stopping criterion also does not guarantee an optimal solution.\\
+
+\subsection*{\textbf{Q4. Explore Population sizes - different population sizes and number of trails}}
+\textbf{Report : Each experiment of specific population size is performed for 'num-trails' times}\\
+
+\textbf{Config1: Roulette Wheel Selection method}\\
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Popsize & Knapsack total value & knapsack max weight & Mean no. of items in the best solution\\ 
+   \hline
+    20 & 2258.83 ± 1798.54 & 1090 & 22\\ 
+   \hline
+    30 & 2149.30 ± 1867.87 & 1078 & 22\\ 
+   \hline
+    40 & 2882.70 ± 2026.71 & 1275 & 22\\
+   \hline
+    50 & 2446.83 ± 1839.45 & 1132 & 22\\
+    \hline
+    60 & 1090.37 ± 1697.97 & 1131 & 24\\
+    \hline
+    80 & 2227.17 ± 1765.27 & 1230 & 23\\
+    \hline
+    90 & 2217.20 ± 1888.26 & 1079 & 23\\
+    \hline
+    100 & 1689.43 ± 1827.58 & 1007 & 23\\
+    \hline
+    110 & 2275.77 ± 2000.95 & 1214 & 22\\
+    \hline
+    120 & 1934.83 ± 1750.10 & 1156 & 22\\
+    \hline
+\end{tabular}}
+\caption{Best Individual selected from all the trails} 
+\end{table} 
+
+\textbf{Config2: Roulette Wheel Selection method}\\
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Popsize & Knapsack total value & knapsack max weight & Mean no. of items in the best solution\\ 
+   \hline
+    20 & 0.00 ± 0.00 & 30357 & 48\\ 
+   \hline
+    30 & 0.00 ± 0.00 & 29445 & 51\\ 
+   \hline
+    40 & 0.00 ± 0.00 & 31094 & 51\\
+   \hline
+    50 & 0.00 ± 0.00 & 30752 & 51\\
+   \hline
+    60 & 0.00 ± 0.00 & 27949 & 50\\
+   \hline
+    80 & 0.00 ± 0.00 & 27462 & 50\\
+   \hline
+    90 & 0.00 ± 0.00 & 30694 & 50\\
+   \hline
+    100 & 0.00 ± 0.00 & 29128 & 51\\
+   \hline
+    110 & 0.00 ± 0.00 & 28026 & 50\\
+   \hline
+    120 & 0.00 ± 0.00 & 29245 & 51\\
+   \hline
+\end{tabular}}
+\caption{Best Individual selected from all the trails} 
+\end{table} 
+The reason for total value to be zero for all the population sizes in the case of config 2 is already discussed above. So, During the random generation that is performed to initialize the population, the individuals are generated in such a way that there is no individual whose total weight is less than or equal to knapsack capacity. To overcome this, we have used penalty and repair function as described above.
+
+
+\section*{Problem 2: Compare GA with a Non-population-based Search Algorithm}
+\subsection*{\textbf{Describe what you did and your results. Compare with
+the GA you implemented yourself.}}\\
+
+Implementation : I used Dynamic Programming approach to solve the knapsack problem without using population. 
+\begin{enumerate}
+    \item The main objective of the knapsack problem is to maximize the total value of items added in the knapsack, while keeping the total weight less than or equal to the weight constraint W.
+    \item create a 2D DP table dp[i][W] - i represents the index of the item and w represents the current weight of the knapsack.
+    \item Initialize the table dp[0][w] = 0 for all w
+    \item Fill up the table\\
+    if w[i] > w, \\
+    dp[i][w]=dp[i−1][w]\\
+    else\\
+    dp[i][w]=v[i]+dp[i−1][w−w[i]]\\
+    Take the maximum of the both\\
+    dp[i][w]=max(dp[i−1][w],v[i]+dp[i−1][w−w[i]])
+    \item dp[n][w] will give the maximum value obtained.
+\end{enumerate}
+\textbf{Results obtained using DP: }\\
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{rlrrr}
+   \hline
+   Config File & No. of items & Total weight & Total Value  \\ 
+   \hline
+   Config1 & 32 & 850 & 7534.00  \\ 
+   \hline
+   Config2 & 120 & 2335.00 & 1266.00 \\ 
+   \hline
+\end{tabular}}
+\caption{Results using DP} 
+\end{table}
+\textbf{Comparison of results obtained in genetic and non-genetic algorithms:} In the genetic algorithm, the most feasible solution is not obtained. Both in config 1 and config2, the value of the items included in the knapsack is greater when a non-genetic algorithm is used.
+We can observe the DP produces the same result in every trail for config1 and config 2 but it is not the case with GA because we have random population initialization.
+\subsection*{\textbf{Q5. Empirical Comparison}}\\
+\textbf{Advantages of using genetic algorithm:}
+\begin{enumerate}
+    \item searches the entire search space more likely to find global optimum rather than local optimum.
+    \item GAs are applied to the population of solutions, enabling parallel processing
+    \item GAs can maintain a good balance in exploration and exploitation through crossover and Mutation.
+\end{enumerate}
+\textbf{Disadvantages of using genetic algorithm:}
+\begin{enumerate}
+    \item GAs heavily depend on population size, crossover rate and mutation rate. Improper tuning leads to bad performance.
+    \item  GAs do not guarantee finding the optimum solution, but only the approximate optimum solution.
+\end{enumerate}
+\textbf{Advantages of using non-genetic algorithm:}
+\begin{enumerate}
+    \item These algorithms exhibit faster convergence.
+    \item They have deterministic outcomes i.e. they have the same result for the same input, unlike genetic algorithms.
+    \item They can find the exact global optimum.
+\end{enumerate}
+\textbf{Dis-advantages of using non-genetic algorithm:}
+\begin{enumerate}
+    \item They are prone to getting trapped in local optima.
+    \item They often focus on exploitation i.e. improving existing solutions ignoring exploration of the entire search space.
+\end{enumerate}
+
+\section*{Problem 3: Genetic Algorithm Formulation}
+\subsection*{\textbf{Q6 Problem Description and GA Design}}
+\textbf{Problem Description: Machine Learning Feature Selection}\\
+\begin{figure}[h]
+\centering
+{
+\includegraphics[width=.225\textwidth]{ill.png}
+}
+\caption{Feature Selection flowchart}
+\label{}
+\end{figure}
+
+In machine learning, we have to select the best subset of features, improving accuracy and reducing overfitting.\\
+\textbf{Chromosomal Representation:}\\
+In each chromosome, o represents that the feature is not selected and 1 represents that it is selected.
+\textbf{Population Initialization:}\\
+Just like in the case of knapsack, randomly generated sequences of 0s and 1s of length equal to the number of features. \\
+\textbf{Stop Criterion: }\\
+The algorithm is stopped when there is convergence i.e., the fitness function is not improving over the generations.\\
+\textbf{Fitness function: }\\
+Fitness Function can be based on the model accuracy for each combinations of features. Also, the fitness can be penalized by the number of features selected in order to avoid over-fitting.\\
+\textbf{Implementation: }\\
+\textbf{Objective Function: }
+Maximize the accuracy and reduce the number of features selected to avoid over-fitting \\
+\begin{equation}
+\text{Maximize: } f(X) = \text{Performance}(S) - \lambda \times |S|
+\end{equation}
+Where:
+\begin{itemize}
+    \item \( S \) is the selected subset of features.
+    \item \( f(X) \) is the objective function.
+    \item \( \lambda \) is a regularization parameter controlling the trade-off between model performance and the number of features.
+    \item \( |S| \) is the number of selected features.
+\end{itemize}
+\textbf{Fitness Function: }\\
+\[
+\text{Fitness}(S) = \text{Model Accuracy}(S) - \lambda \times |S|
+\]
+\textbf{Selection: }\\
+For selection, either Roulette wheel or tournament method can be used just as in the case of knapsack problem.\\
+\textbf{Cross-over and Mutation: }
+These two operations would be similar to that of the ones used in knapsack problem. Here, off-springs are generated and mutated.
+
+In the final generation, best chromosome with highest fitness values is selected and the number of active genes in that chromosome represent the number of features selected.
+
+\section*{Problem 4: Exploring Another Technique}
+\subsection*{\textbf{Q7 Exploring Another Nature-inspired Search/Optimization Technique}}
+I have explored Hippopotamus optimization technique.\\
+
+\textbf {Hippopotamus Optimization Algorithm:}
+The Hippopotamus Optimization Algorithm is a new addition to nature-inspired metaheuristics. It aims to simulate the rare behaviors of hippopotamuses in aquatic environments. It captures three basic survival behaviors: position updating, wherein hippos search for an improved location in water according to visibility and availability of food; second, defensive behavior, which models the defense mechanism of hippos in response to any form of threat; and third, escaping behavior that models their capability to avoid predators. These mechanisms act like balances between exploration, in finding new areas, and exploitation, in refining known good solutions, so that HO turns out to be robust for complex optimization tasks. None of these is new; rather, the novelty of HO lies in how these behaviors have been modeled mathematically to guide the optimization process across diverse domains.
+
+The performances of the HO algorithm are rigorously tested on various benchmark problems, which include unimodal functions for testing the exploitation ability, multimodal functions for testing the exploration ability, and real-world engineering optimization problems. It performed very well compared with other established algorithms like PSO, GA, and DE in terms of convergence speed, solution quality, and escaping from local optima. HO has shown its potential in handling high-dimensional complex constrained optimization problems in real-world applications, rendering it fairly promising for practical applications, such as engineering design, scheduling, and training neural networks where precision and computational efficiency are of significance.
+\begin{thebibliography}{999}
+\bibitem{amiri2023hippopotamus}
+  Mohammad Hussein Amiri, Nastaran Mehrabi Hashjin, Mohsen Montazeri, Seyedali Mirjalili, and Nima Khodadadi,
+  \emph{Hippopotamus Optimization Algorithm: A Novel Nature-Inspired Optimization Algorithm}.
+  Shahid Beheshti University,
+  2023,
+  DOI: 10.21203/rs.3.rs-3503110/v1.
+\end{thebibliography}
+\end{document}
