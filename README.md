@@ -57,5 +57,3 @@ This project implements a **Genetic Algorithm (GA)** to solve the classic **0/1 
 
 ✅ DP achieved best total value (**7534**) for config1  
 ⚠️ But becomes infeasible for large-scale knapsacks → where GA excels
-
-## 📂 Project Structure
